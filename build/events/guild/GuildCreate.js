@@ -26,6 +26,27 @@ class GuildCreate extends Event_1.default {
     Execute(guild) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const { data: currentGuild } = yield this.client.supabase
+                    .from("guilds")
+                    .select()
+                    .eq("id", guild.id)
+                    .limit(1)
+                    .maybeSingle();
+                if (!currentGuild) {
+                    const insertedGuild = yield this.client.supabase
+                        .from("guilds")
+                        .insert([
+                        {
+                            id: +guild.id,
+                            name: guild.name,
+                            icon: guild.iconURL() || null,
+                            owner_id: guild.ownerId,
+                            region: guild.preferredLocale,
+                        },
+                    ])
+                        .select();
+                    console.log({ insertedGuild });
+                }
                 if (!(yield GuildConfig_1.default.exists({ guildId: guild.id })))
                     yield GuildConfig_1.default.create({ guildId: guild.id });
             }

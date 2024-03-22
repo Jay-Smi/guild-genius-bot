@@ -14,6 +14,28 @@ export default class GuildCreate extends Event {
 
     async Execute(guild: Guild) {
         try {
+            const { data: currentGuild } = await this.client.supabase
+                .from("guilds")
+                .select()
+                .eq("id", guild.id)
+                .limit(1)
+                .maybeSingle();
+
+            if (!currentGuild) {
+                await this.client.supabase
+                    .from("guilds")
+                    .insert([
+                        {
+                            id: +guild.id,
+                            name: guild.name,
+                            icon: guild.iconURL() || null,
+                            owner_id: +guild.ownerId,
+                            region: guild.preferredLocale,
+                        },
+                    ])
+                    .select();
+            }
+
             if (!(await GuildConfig.exists({ guildId: guild.id })))
                 await GuildConfig.create({ guildId: guild.id });
         } catch (err) {

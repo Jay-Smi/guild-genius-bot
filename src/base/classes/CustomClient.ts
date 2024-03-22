@@ -5,6 +5,7 @@ import Handler from "./Handler";
 import Command from "./Command";
 import SubCommand from "./SubCommand";
 import { connect } from "mongoose";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 export default class CustomClient extends Client implements ICustomClient {
     config: IConfig;
@@ -13,6 +14,7 @@ export default class CustomClient extends Client implements ICustomClient {
     subCommands: Collection<string, SubCommand>;
     cooldowns: Collection<string, Collection<string, number>>;
     developmentMode: boolean;
+    supabase: SupabaseClient<Database>;
 
     constructor() {
         super({ intents: [GatewayIntentBits.Guilds] });
@@ -28,6 +30,11 @@ export default class CustomClient extends Client implements ICustomClient {
         this.cooldowns = new Collection();
 
         this.developmentMode = process.argv.slice(2).includes("--development");
+
+        this.supabase = createClient<Database>(
+            this.config.supabaseUrl,
+            this.config.supabaseServiceRoleKey
+        );
     }
 
     Init(): void {
