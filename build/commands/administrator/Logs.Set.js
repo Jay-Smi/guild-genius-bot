@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const SubCommand_1 = __importDefault(require("../../base/classes/SubCommand"));
-const GuildConfig_1 = __importDefault(require("../../base/schemas/GuildConfig"));
 class LogsSet extends SubCommand_1.default {
     constructor(client) {
         super(client, {
@@ -23,23 +22,41 @@ class LogsSet extends SubCommand_1.default {
     }
     Execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             const logType = interaction.options.getString("log-type");
             const channel = interaction.options.getChannel("channel");
             yield interaction.deferReply({ ephemeral: true });
             try {
-                let guild = yield GuildConfig_1.default.findOne({
-                    guildId: interaction.guildId,
-                });
-                if (!guild) {
-                    guild = yield GuildConfig_1.default.create({
-                        guildId: interaction.guildId,
+                //OLD: MongoDB
+                // let guild = await GuildConfig.findOne({
+                //     guildId: interaction.guildId,
+                // });
+                // if (!guild) {
+                //     guild = await GuildConfig.create({
+                //         guildId: interaction.guildId,
+                //     });
+                // }
+                const { data: currentGuild } = yield this.client.supabase
+                    .from("guilds")
+                    .select()
+                    .eq("discord_server_id", +interaction.guildId)
+                    .limit(1)
+                    .maybeSingle();
+                if (!currentGuild)
+                    return interaction.editReply({
+                        embeds: [
+                            new discord_js_1.EmbedBuilder()
+                                .setColor("Red")
+                                .setDescription("❌ Guild not found in the database, report this bug to admin, try removing bot from discord server and re-inviting it!"),
+                        ],
                     });
-                }
+                currentGuild.logs = Object.assign(Object.assign({}, currentGuild.logs), { [`${logType}`]: Object.assign({}, (_a = currentGuild.logs) === null || _a === void 0 ? void 0 : _a[`${logType}`]) });
                 //@ts-ignore
-                console.log(guild);
-                //@ts-ignore
-                guild.logs[`${logType}`].channelId = channel.id;
-                yield guild.save();
+                currentGuild.logs[`${logType}`].channelId = channel.id;
+                yield this.client.supabase
+                    .from("guilds")
+                    .update(currentGuild)
+                    .eq("discord_server_id", +interaction.guildId);
                 return interaction.editReply({
                     embeds: [
                         new discord_js_1.EmbedBuilder()

@@ -22,19 +22,45 @@ export default class LogsToggle extends SubCommand {
         await interaction.deferReply({ ephemeral: true });
 
         try {
-            let guild = await GuildConfig.findOne({
-                guildId: interaction.guildId,
-            });
+            // let guild = await GuildConfig.findOne({
+            //     guildId: interaction.guildId,
+            // });
 
-            if (!guild)
-                guild = await GuildConfig.create({
-                    guildId: interaction.guildId,
+            // if (!guild)
+            //     guild = await GuildConfig.create({
+            //         guildId: interaction.guildId,
+            //     });
+
+            const { data: currentGuild } = await this.client.supabase
+                .from("guilds")
+                .select()
+                .eq("discord_server_id", +interaction.guildId!)
+                .limit(1)
+                .maybeSingle();
+
+            if (!currentGuild)
+                return interaction.editReply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor("Red")
+                            .setDescription(
+                                "❌ Guild not found in the database, report this bug to admin, try removing bot from discord server and re-inviting it!"
+                            ),
+                    ],
                 });
 
-            //@ts-ignore
-            guild.logs[`${logType}`].enabled = enabled;
+            currentGuild.logs = {
+                ...currentGuild.logs,
+                [`${logType}`]: { ...currentGuild.logs?.[`${logType}`] },
+            };
 
-            await guild.save();
+            //@ts-ignore
+            currentGuild.logs[`${logType}`].enabled = enabled;
+
+            await this.client.supabase
+                .from("guilds")
+                .update(currentGuild)
+                .eq("discord_server_id", +interaction.guildId!);
 
             return interaction.editReply({
                 embeds: [

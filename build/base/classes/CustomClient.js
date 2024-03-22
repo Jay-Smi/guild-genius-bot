@@ -22,6 +22,7 @@ class CustomClient extends discord_js_1.Client {
         console.log(`Starting the bot in ${this.developmentMode ? "development" : "production"} mode...`);
         this.LoadHandlers();
         this.login(this.developmentMode ? this.config.devToken : this.config.token).catch((err) => console.error(err));
+        //OLD: MongoDB
         (0, mongoose_1.connect)(this.developmentMode
             ? this.config.devMongoUrl
             : this.config.mongoUrl)

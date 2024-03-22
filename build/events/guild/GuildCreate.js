@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const Event_1 = __importDefault(require("../../base/classes/Event"));
-const GuildConfig_1 = __importDefault(require("../../base/schemas/GuildConfig"));
 class GuildCreate extends Event_1.default {
     constructor(client) {
         super(client, {
@@ -33,22 +32,22 @@ class GuildCreate extends Event_1.default {
                     .limit(1)
                     .maybeSingle();
                 if (!currentGuild) {
-                    const insertedGuild = yield this.client.supabase
+                    yield this.client.supabase
                         .from("guilds")
                         .insert([
                         {
-                            id: +guild.id,
+                            discord_server_id: +guild.id,
                             name: guild.name,
                             icon: guild.iconURL() || null,
-                            owner_id: guild.ownerId,
+                            owner_id: +guild.ownerId,
                             region: guild.preferredLocale,
                         },
                     ])
                         .select();
-                    console.log({ insertedGuild });
                 }
-                if (!(yield GuildConfig_1.default.exists({ guildId: guild.id })))
-                    yield GuildConfig_1.default.create({ guildId: guild.id });
+                //OLD: MongoDB
+                // if (!(await GuildConfig.exists({ guildId: guild.id })))
+                //     await GuildConfig.create({ guildId: guild.id });
             }
             catch (err) {
                 console.log(err);

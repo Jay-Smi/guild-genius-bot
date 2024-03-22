@@ -50,6 +50,7 @@ export default class CustomClient extends Client implements ICustomClient {
             this.developmentMode ? this.config.devToken : this.config.token
         ).catch((err) => console.error(err));
 
+        //OLD: MongoDB
         connect(
             this.developmentMode
                 ? this.config.devMongoUrl

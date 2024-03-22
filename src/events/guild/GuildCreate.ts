@@ -26,7 +26,7 @@ export default class GuildCreate extends Event {
                     .from("guilds")
                     .insert([
                         {
-                            id: +guild.id,
+                            discord_server_id: +guild.id,
                             name: guild.name,
                             icon: guild.iconURL() || null,
                             owner_id: +guild.ownerId,
@@ -36,8 +36,9 @@ export default class GuildCreate extends Event {
                     .select();
             }
 
-            if (!(await GuildConfig.exists({ guildId: guild.id })))
-                await GuildConfig.create({ guildId: guild.id });
+            //OLD: MongoDB
+            // if (!(await GuildConfig.exists({ guildId: guild.id })))
+            //     await GuildConfig.create({ guildId: guild.id });
         } catch (err) {
             console.log(err);
         }
