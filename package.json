@@ -1,0 +1,26 @@
+{
+    "name": "guild-genius-bot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "clean": "tsc --build --clean",
+        "build": "tsc --build",
+        "start": "npm run clean && npm run build && node build/index.js",
+        "startNoClean": "npm run build && node build/index.js",
+        "devStart": "npm run clean && npm run build && node build/index.js --development",
+        "devStartNoClean": "npm run build && node build/index.js --development"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@types/ms": "^0.7.34",
+        "discord-arts": "^0.5.8",
+        "discord.js": "^14.14.1",
+        "glob": "^10.3.10",
+        "mongodb": "^6.5.0",
+        "mongoose": "^8.2.2",
+        "ms": "^2.1.3"
+    }
+}
