@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const Event_1 = __importDefault(require("../../base/classes/Event"));
-const GuildConfig_1 = __importDefault(require("../../base/schemas/GuildConfig"));
 class GuildDelete extends Event_1.default {
     constructor(client) {
         super(client, {
@@ -26,7 +25,8 @@ class GuildDelete extends Event_1.default {
     Execute(guild) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield GuildConfig_1.default.deleteOne({ guildId: guild.id });
+                console.log(`Left guild: ${guild.name}`);
+                // await GuildConfig.deleteOne({ guildId: guild.id });
             }
             catch (err) {
                 console.log(err);

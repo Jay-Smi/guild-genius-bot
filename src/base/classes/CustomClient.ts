@@ -17,7 +17,9 @@ export default class CustomClient extends Client implements ICustomClient {
     supabase: SupabaseClient<Database>;
 
     constructor() {
-        super({ intents: [GatewayIntentBits.Guilds] });
+        super({
+            intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+        });
 
         this.config = require(`${process.cwd()}/data/config.json`);
 
@@ -51,13 +53,13 @@ export default class CustomClient extends Client implements ICustomClient {
         ).catch((err) => console.error(err));
 
         //OLD: MongoDB
-        connect(
-            this.developmentMode
-                ? this.config.devMongoUrl
-                : this.config.mongoUrl
-        )
-            .then(() => console.log("Connected to MongoDB!"))
-            .catch((err) => console.log(err));
+        // connect(
+        //     this.developmentMode
+        //         ? this.config.devMongoUrl
+        //         : this.config.mongoUrl
+        // )
+        //     .then(() => console.log("Connected to MongoDB!"))
+        //     .catch((err) => console.log(err));
     }
 
     LoadHandlers(): void {

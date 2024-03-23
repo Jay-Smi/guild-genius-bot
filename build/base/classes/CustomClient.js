@@ -5,11 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const Handler_1 = __importDefault(require("./Handler"));
-const mongoose_1 = require("mongoose");
 const supabase_js_1 = require("@supabase/supabase-js");
 class CustomClient extends discord_js_1.Client {
     constructor() {
-        super({ intents: [discord_js_1.GatewayIntentBits.Guilds] });
+        super({
+            intents: [discord_js_1.GatewayIntentBits.Guilds, discord_js_1.GatewayIntentBits.GuildMembers],
+        });
         this.config = require(`${process.cwd()}/data/config.json`);
         this.handler = new Handler_1.default(this);
         this.commands = new discord_js_1.Collection();
@@ -23,11 +24,13 @@ class CustomClient extends discord_js_1.Client {
         this.LoadHandlers();
         this.login(this.developmentMode ? this.config.devToken : this.config.token).catch((err) => console.error(err));
         //OLD: MongoDB
-        (0, mongoose_1.connect)(this.developmentMode
-            ? this.config.devMongoUrl
-            : this.config.mongoUrl)
-            .then(() => console.log("Connected to MongoDB!"))
-            .catch((err) => console.log(err));
+        // connect(
+        //     this.developmentMode
+        //         ? this.config.devMongoUrl
+        //         : this.config.mongoUrl
+        // )
+        //     .then(() => console.log("Connected to MongoDB!"))
+        //     .catch((err) => console.log(err));
     }
     LoadHandlers() {
         this.handler.LoadEvents();

@@ -1,7 +1,6 @@
 import { EmbedBuilder, Events, Guild } from "discord.js";
 import CustomClient from "../../base/classes/CustomClient";
 import Event from "../../base/classes/Event";
-import GuildConfig from "../../base/schemas/GuildConfig";
 
 export default class GuildCreate extends Event {
     constructor(client: CustomClient) {
@@ -17,7 +16,7 @@ export default class GuildCreate extends Event {
             const { data: currentGuild } = await this.client.supabase
                 .from("guilds")
                 .select()
-                .eq("id", guild.id)
+                .eq("discord_server_id", +guild.id)
                 .limit(1)
                 .maybeSingle();
 
@@ -34,6 +33,16 @@ export default class GuildCreate extends Event {
                         },
                     ])
                     .select();
+            } else {
+                await this.client.supabase
+                    .from("guilds")
+                    .update({
+                        name: guild.name,
+                        icon: guild.iconURL() || null,
+                        owner_id: +guild.ownerId,
+                        region: guild.preferredLocale,
+                    })
+                    .eq("id", currentGuild.id);
             }
 
             //OLD: MongoDB

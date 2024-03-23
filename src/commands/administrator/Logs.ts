@@ -6,6 +6,7 @@ import {
 import Command from "../../base/classes/Command";
 import CustomClient from "../../base/classes/CustomClient";
 import Category from "../../base/enums/Category";
+import Log from "../../base/enums/Log";
 
 export default class Logs extends Command {
     constructor(client: CustomClient) {
@@ -31,7 +32,11 @@ export default class Logs extends Command {
                             choices: [
                                 {
                                     name: "Moderation Logs",
-                                    value: "moderation",
+                                    value: Log.Moderation,
+                                },
+                                {
+                                    name: "Join/Leave Logs",
+                                    value: Log.JoinLeave,
                                 },
                             ],
                         },
@@ -56,7 +61,11 @@ export default class Logs extends Command {
                             choices: [
                                 {
                                     name: "Moderation Logs",
-                                    value: "moderation",
+                                    value: Log.Moderation,
+                                },
+                                {
+                                    name: "Join/Leave Logs",
+                                    value: Log.JoinLeave,
                                 },
                             ],
                         },

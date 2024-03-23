@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const Command_1 = __importDefault(require("../../base/classes/Command"));
 const Category_1 = __importDefault(require("../../base/enums/Category"));
+const Log_1 = __importDefault(require("../../base/enums/Log"));
 class Logs extends Command_1.default {
     constructor(client) {
         super(client, {
@@ -30,7 +31,11 @@ class Logs extends Command_1.default {
                             choices: [
                                 {
                                     name: "Moderation Logs",
-                                    value: "moderation",
+                                    value: Log_1.default.Moderation,
+                                },
+                                {
+                                    name: "Join/Leave Logs",
+                                    value: Log_1.default.JoinLeave,
                                 },
                             ],
                         },
@@ -55,7 +60,11 @@ class Logs extends Command_1.default {
                             choices: [
                                 {
                                     name: "Moderation Logs",
-                                    value: "moderation",
+                                    value: Log_1.default.Moderation,
+                                },
+                                {
+                                    name: "Join/Leave Logs",
+                                    value: Log_1.default.JoinLeave,
                                 },
                             ],
                         },

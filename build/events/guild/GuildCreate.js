@@ -28,7 +28,7 @@ class GuildCreate extends Event_1.default {
                 const { data: currentGuild } = yield this.client.supabase
                     .from("guilds")
                     .select()
-                    .eq("id", guild.id)
+                    .eq("discord_server_id", +guild.id)
                     .limit(1)
                     .maybeSingle();
                 if (!currentGuild) {
@@ -44,6 +44,17 @@ class GuildCreate extends Event_1.default {
                         },
                     ])
                         .select();
+                }
+                else {
+                    yield this.client.supabase
+                        .from("guilds")
+                        .update({
+                        name: guild.name,
+                        icon: guild.iconURL() || null,
+                        owner_id: +guild.ownerId,
+                        region: guild.preferredLocale,
+                    })
+                        .eq("id", currentGuild.id);
                 }
                 //OLD: MongoDB
                 // if (!(await GuildConfig.exists({ guildId: guild.id })))
